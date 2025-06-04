@@ -1,4 +1,9 @@
 /* Estilos globales */
+*
+{
+  box-sizing: border-box;
+}
+
 body 
 {
   font-family: Arial, sans-serif;
@@ -155,4 +160,17 @@ nav
 {
   font-size: 1.2rem;
   text-align: right;
+}
+
+.boton-vaciar-carrito
+{
+  color: white;
+  background-color: red;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

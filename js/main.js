@@ -92,6 +92,7 @@ let contenedorProductos = document.querySelector(".contenedor-productos");
 let barraBusqueda = document.querySelector(".barra-busqueda");
 let nombreAlumno = document.querySelector(".nombre-alumno");
 let ulProductos = document.getElementById("productos");
+let contadorCarrito = document.getElementById("contador-carrito")
 
 /* --- Metodos --- */
 /* -- Mostrar frutas --*/
@@ -213,6 +214,8 @@ function agregarProducto(e)
     guardarCarrito(carritoParseado);
 
     mostrarCarrito(carritoParseado);
+
+    contadorCarrito.innerText = `${carritoParseado.length}`;
 }
 
 /*-- Funcion que obtiene el carrito del LocalStorage, lo parsea a un array y lo retorna --*/
@@ -264,7 +267,11 @@ function eliminarProducto(e)
         carritoParseado = [];
     }
 
-    if(flagProductoPreExistente)
+    if(!flagProductoPreExistente)
+    {
+        alert(`No hay ningún ${nombreProducto} en el carrito.`);
+    }
+    else
     {
         carritoParseado = carritoParseado.filter((element) => 
         {
@@ -282,15 +289,14 @@ function eliminarProducto(e)
     guardarCarrito(carritoParseado);
 
     mostrarCarrito(carritoParseado);
+
+    contadorCarrito.innerText = `${carritoParseado.length}`;
 }
 
 /* -- Limpiar el carrito -- */
 function limpiarCarrito() 
 {
     localStorage.removeItem("carrito");
-
-    let textoValorFinal = document.getElementById("precio-final");
-    textoValorFinal.innerText = "$0.00.";
 }
 
 window.addEventListener("DOMContentLoaded", () => 
@@ -298,11 +304,12 @@ window.addEventListener("DOMContentLoaded", () =>
     //cargarProductosCarrito();
 
     const botonesAgregar = document.querySelectorAll(".boton-agregar");
-    const botonesEliminar = document.querySelectorAll(".boton-eliminar");   
+    const botonesEliminar = document.querySelectorAll(".boton-eliminar");  
+    const botonVaciar = document.querySelector(".boton-vaciar-carrito"); 
 
     botonesAgregar.forEach(btn => btn.addEventListener("click", agregarProducto));
     botonesEliminar.forEach(btn => btn.addEventListener("click", eliminarProducto));
-    //document.querySelector(".btn-vaciar-carrito").addEventListener("click", limpiarCarrito);
+    botonVaciar.addEventListener("click", limpiarCarrito);
 });
 
 /*-- Mostrar datos del alumno -- */
