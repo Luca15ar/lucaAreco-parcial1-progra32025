@@ -4,79 +4,79 @@ let listaFrutas = [
         id: 1,
         nombre: "Arándano",
         precio: 5000,
-        img: "../lucaAreco-parcial1-progra32025/img/arandano.jpg",
+        img: "../img/arandano.jpg",
     },
     {
         id: 2,
         nombre: "Banana",
         precio: 1000,
-        img: "../lucaAreco-parcial1-progra32025/img/banana.jpg",
+        img: "../img/banana.jpg",
     },
     {
         id: 3,
         nombre: "Frambuesa",
         precio: 3000,
-        img: "../lucaAreco-parcial1-progra32025/img/frambuesa.png",
+        img: "../img/frambuesa.png",
     },
     {
         id: 4,
         nombre: "Frutilla",
         precio: 3000,
-        img: "../lucaAreco-parcial1-progra32025/img/frutilla.jpg",
+        img: "../img/frutilla.jpg",
     },
     {
         id: 5,
         nombre: "Kiwi",
         precio: 3000,
-        img: "../lucaAreco-parcial1-progra32025/img/kiwi.jpg",
+        img: "../img/kiwi.jpg",
     },
     {
         id: 6,
         nombre: "Mandarina",
         precio: 800,
-        img: "../lucaAreco-parcial1-progra32025/img/mandarina.jpg",
+        img: "../img/mandarina.jpg",
     },
     {
         id: 7,
         nombre: "Manzana",
         precio: 1500,
-        img: "../lucaAreco-parcial1-progra32025/img/manzana.jpg",
+        img: "../img/manzana.jpg",
     },
     {
         id: 8,
         nombre: "Naranja",
         precio: 9000,
-        img: "../lucaAreco-parcial1-progra32025/img/naranja.jpg",
+        img: "../img/naranja.jpg",
     },
     {
         id: 9,
         nombre: "Pera",
         precio: 2500,
-        img: "../lucaAreco-parcial1-progra32025/img/pera.jpg",
+        img: "../img/pera.jpg",
     },
     {
         id: 10,
         nombre: "Ananá",
         precio: 3000,
-        img: "../lucaAreco-parcial1-progra32025/img/anana.jpg",
+        img: "../img/anana.jpg",
     },
     {
         id: 11,
         nombre: "Pomelo amarillo",
         precio: 2000,
-        img: "../lucaAreco-parcial1-progra32025/img/pomelo-amarillo.jpg",
+        img: "../img/pomelo-amarillo.jpg",
     },
     {
         id: 12,
         nombre: "Pomelo rojo",
         precio: 2000,
-        img: "../lucaAreco-parcial1-progra32025/img/pomelo-rojo.jpg",
+        img: "../img/pomelo-rojo.jpg",
     },
     {
         id: 13,
         nombre: "Sandía",
         precio: 12000,
-        img: "../lucaAreco-parcial1-progra32025/img/sandia.jpg",
+        img: "../img/sandia.jpg",
     },
 ];
 
@@ -89,10 +89,12 @@ let alumno = {
 
 /* -- Obtengo los elementos del HTML -- */
 let contenedorProductos = document.querySelector(".contenedor-productos");
-let barraBusqueda = document.querySelector(".barra-busqueda");
+let barraBusqueda = document.getElementById("barra-busqueda");
 let nombreAlumno = document.querySelector(".nombre-alumno");
-let ulProductos = document.getElementById("productos");
-let contadorCarrito = document.getElementById("contador-carrito")
+let ulProductos = document.getElementById("lista-productos");
+let contadorCarrito = document.getElementById("contador-carrito");
+let pElementosCarritos = document.getElementById("texto-items-carrito");
+let precioTotal = document.getElementById("precio-total");
 
 /* --- Metodos --- */
 /* -- Mostrar frutas --*/
@@ -140,25 +142,47 @@ function filtrarFrutas()
 /* -- Mostrar productos en el carrito -- */
 function mostrarCarrito(carrito)
 {
+    /*  Recorro el array del carrito y en cada iteración del array, accedo y extraigo los datos del objeto para posteriormente, ubicarlos en el lugar 
+        correspondiente para armar el bloque de HTML de forma dinámica y por último, modifico el HTML ya existente por el nuevo que creé. También, 
+        modifico el contador de productos, poniendole el total de productos que hay en el carrito.
+     */
     let htmlProductosCarrito = "";
+    let contadorProductos = 0;
+    
+    if(carrito)
+    {
+        carrito.forEach(fruta => {
+            htmlProductosCarrito += `
+                <li>
+                    <div class="card-producto">
+                        <img class="imagen-producto" src="${fruta.img}" alt="${fruta.nombre}">
+                        <h3 class="nombre-producto">${fruta.nombre}</h3>
+                        <p class="cantidad-producto">Cantidad: ${fruta.cantidad}</p>
+                        <p class="precio-producto">${fruta.precio}</p>
+                        <button class="boton-eliminar">Eliminar</button>
+                    </div>
+                </li>
+            `;
+        contadorProductos = contadorProductos + fruta.cantidad;
+        });
 
-    carrito.forEach(fruta => {
-        htmlProductosCarrito += `
-            <li class="bloque-item>
-                <img class="imagen-producto" src="${fruta.img}" alt="${fruta.nombre}">
-                <h3 class="nombre-producto">${fruta.nombre}</h3>
-                <p class="precio-producto">${fruta.precio}</p>
-                <button class="boton-eliminar">Eliminar</button>
-            </li>
-        `;
-    });
+        pElementosCarritos.classList.add('hidden');
+
+        contadorCarrito.innerText = `${contadorProductos}`;
+    }
+    else
+    {
+        pElementosCarritos.classList.remove('hidden');
+
+        contadorCarrito.innerText = `0`; 
+    }
 
     ulProductos.innerHTML = htmlProductosCarrito;
 
     console.log(carrito);
 }
 
-/* Agregar productos al carrito*/
+/* -- Agregar productos al carrito -- */
 function agregarProducto(e)
 {
     /*  Obtengo la referencia al elemento clickeado desde en base al evento, luego me fijo si ya hay algo cargado en el localStorage como "carrito".
@@ -166,6 +190,7 @@ function agregarProducto(e)
         Creo un objeto con los datos de la fruta seleccionada y lo agrego al array. Guardo el array con los productos añadidos al carrito, en el localStorage
         y muestro todos los productos del carrito.
         */
+
     let elementoClickeado = e.target;
     
     let contenedor = elementoClickeado.closest("div");
@@ -183,7 +208,7 @@ function agregarProducto(e)
 
     if(carritoParseado)
     {
-        for (let element of carritoParseado) 
+        for(let element of carritoParseado) 
         {
             if(element.nombre == nombreProducto)
             {
@@ -215,37 +240,27 @@ function agregarProducto(e)
 
     mostrarCarrito(carritoParseado);
 
-    contadorCarrito.innerText = `${carritoParseado.length}`;
+    actualizarPrecioCarrito(carritoParseado);
 }
 
-/*-- Funcion que obtiene el carrito del LocalStorage, lo parsea a un array y lo retorna --*/
-function obtenerCarrito() 
-{
-    let carritoObtenido = localStorage.getItem("carrito");
-    let carritoParseado = JSON.parse(carritoObtenido);
-
-    return carritoParseado;
-}
-
-/*-- Funcion que guarda el carrito recibido al LocalStorage, previamente transformado a string --*/
-function guardarCarrito(carrito) 
-{
-    let carritoStringify = JSON.stringify(carrito);
-    localStorage.setItem("carrito", carritoStringify);
-}
-
-/*-- Eliminar productos del carrito */
+/* -- Eliminar productos del carrito -- */
 function eliminarProducto(e)
 {
     let elementoClickeado = e.target;
+
+    console.log(elementoClickeado);
     
-    let contenedor = elementoClickeado.closest("li");
+    let contenedor = elementoClickeado.closest("div");
+
+    console.log(contenedor);
 
     let elementoNombre = contenedor.querySelector(".nombre-producto");
 
     console.log(elementoNombre);
 
     let nombreProducto = elementoNombre.textContent;
+
+    console.log(nombreProducto);
 
     let carritoParseado = obtenerCarrito();
     let flagProductoPreExistente = false;
@@ -270,6 +285,8 @@ function eliminarProducto(e)
     if(!flagProductoPreExistente)
     {
         alert(`No hay ningún ${nombreProducto} en el carrito.`);
+
+        pElementosCarritos.style.display = 'block';
     }
     else
     {
@@ -290,25 +307,110 @@ function eliminarProducto(e)
 
     mostrarCarrito(carritoParseado);
 
-    contadorCarrito.innerText = `${carritoParseado.length}`;
+    actualizarPrecioCarrito(carritoParseado);
+}
+
+/* -- Actualizar el precio total -- */
+function actualizarPrecioCarrito(carrito)
+{
+    /*  Verifico si el carrito tiene productos, si tiene aunque sea uno, lo recorro con un forEach y extraigo el precio del producto. Lo modifico
+        para convertirlo en un dato operable para realizar los calculos y lo guardo en una variable acumulativa. Por último, lo convierto nuevamente
+        en un string para inyectarlo en el html.
+     */
+    
+    let totalPrecioProducto = 0;
+    let precioString = "";
+    let precioParseado = 0;
+    let precioFinal = 0;
+
+    if(carrito)
+    {
+        carrito.forEach(fruta => {
+            precioString = fruta.precio;
+            precioString = precioString.replace("$", "");
+            precioParseado = parseFloat(precioString);
+            precioFinal = precioParseado * fruta.cantidad;
+
+            totalPrecioProducto += precioFinal;
+        });
+
+        precioTotal.innerText = totalPrecioProducto.toString();
+    }
+    else
+    {
+        precioTotal.innerText = '0.00';
+    } 
+}
+
+/* -- Ordenar productos alfabéticamente o por precios de menor a mayor -- */
+function ordenarProductos(tipo)
+{
+    let carritoCopia = JSON.parse(localStorage.getItem("carrito"));
+
+    if(tipo === 'alfabetico')
+    {
+        carritoCopia.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    }
+    else if(tipo === 'precio')
+    {
+        carritoCopia.sort((a, b) => 
+            parseFloat(String(a.precio).replace("$", "")) -
+            parseFloat(String(b.precio).replace("$", "")));
+    }
+
+    guardarCarrito(carritoCopia);
+
+    mostrarCarrito(carritoCopia);
+}
+
+/* -- Obtener carrito -- */
+function obtenerCarrito() 
+{
+    /*  Obtengo el carrito del LocalStorage, lo parseo a un array y lo retorno.
+    */
+
+    let carritoObtenido = localStorage.getItem("carrito");
+    let carritoParseado = JSON.parse(carritoObtenido);
+
+    return carritoParseado;
+}
+
+/* -- Guardar carrito -- */
+function guardarCarrito(carrito) 
+{
+    /*  Guardo el carrito recibido al LocalStorage, previamente transformado a string.
+    */
+
+    let carritoStringify = JSON.stringify(carrito);
+    localStorage.setItem("carrito", carritoStringify);
 }
 
 /* -- Limpiar el carrito -- */
 function limpiarCarrito() 
 {
+    /*  Uso la función integrada del LocalStorage para eliminar el array existente, muestro los cambios después de hacerlo.
+    */
     localStorage.removeItem("carrito");
+
+    mostrarCarrito(obtenerCarrito());
+
+    actualizarPrecioCarrito(obtenerCarrito());
 }
 
 window.addEventListener("DOMContentLoaded", () => 
 {
-    //cargarProductosCarrito();
-
     const botonesAgregar = document.querySelectorAll(".boton-agregar");
-    const botonesEliminar = document.querySelectorAll(".boton-eliminar");  
-    const botonVaciar = document.querySelector(".boton-vaciar-carrito"); 
+    const botonesEliminar = document.querySelectorAll(".boton-eliminar");
+    const botonOrdenarNombres = document.querySelector(".boton-ordenar-nombres");
+    const botonOrdenarPrecios = document.querySelector(".boton-ordenar-precios");  
+    const botonVaciar = document.querySelector(".boton-vaciar-carrito");
 
     botonesAgregar.forEach(btn => btn.addEventListener("click", agregarProducto));
-    botonesEliminar.forEach(btn => btn.addEventListener("click", eliminarProducto));
+    botonesEliminar.forEach(btn => btn.addEventListener("click", () => {
+        console.log("click eliminar");
+    }));
+    botonOrdenarNombres.addEventListener("click", () => {ordenarProductos("alfabetico")});
+    botonOrdenarPrecios.addEventListener("click", () => {ordenarProductos("precio")});
     botonVaciar.addEventListener("click", limpiarCarrito);
 });
 
@@ -333,8 +435,11 @@ function imprimirDatosAlumno(alumno)
 /* -- Función inicializadora -- */
 function init()
 {
-    mostrarFrutas(listaFrutas);
+    const carritoEnMemoria = obtenerCarrito() || [];
     imprimirDatosAlumno(alumno);
+    mostrarFrutas(listaFrutas);
+    mostrarCarrito(carritoEnMemoria);
+    actualizarPrecioCarrito(carritoEnMemoria);
 }
 
 init();
